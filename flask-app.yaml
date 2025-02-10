@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-flask-metrics-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-flask-metrics-app
+  template:
+    metadata:
+      labels:
+        app: my-flask-metrics-app
+    spec:
+      containers:
+        - name: my-flask-metrics-app
+          image: my-flask-metrics-app:latest
+          imagePullPolicy: Never
+          resources:
+            limits:
+              memory: "64Mi"
+              cpu: "200m"
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-flask-metrics-app
+spec:
+  selector:
+    app: my-flask-metrics-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: NodePort
